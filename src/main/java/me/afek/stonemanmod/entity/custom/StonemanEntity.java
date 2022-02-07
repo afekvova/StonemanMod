@@ -26,4 +26,9 @@ public class StonemanEntity extends BaseEntity {
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 0.85D, false));
         this.targetSelector.addGoal(1, new AttackPlayerGoal<>(this, PlayerEntity.class, true));
     }
+
+    @Override
+    public void checkDespawn() {
+        //NoSupportMethod
+    }
 }
