@@ -1,4 +1,4 @@
-package me.afek.slendermanmod.entity.custom;
+package me.afek.stonemanmod.entity.custom;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.monster.MonsterEntity;
