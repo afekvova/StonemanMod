@@ -8,9 +8,9 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.util.ResourceLocation;
 
-public class SlendermanRenderer extends LivingRenderer<StonemanEntity, PlayerModel<StonemanEntity>> {
+public class StonemanRenderer extends LivingRenderer<StonemanEntity, PlayerModel<StonemanEntity>> {
 
-    public SlendermanRenderer(EntityRendererManager renderManager) {
+    public StonemanRenderer(EntityRendererManager renderManager) {
         super(renderManager, new StonemanModel<>(0.0F, false), 0.5F);
         this.shadowRadius = 0.7F;
     }

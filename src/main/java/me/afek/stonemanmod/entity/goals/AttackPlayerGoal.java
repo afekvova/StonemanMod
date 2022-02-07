@@ -1,5 +1,6 @@
 package me.afek.stonemanmod.entity.goals;
 
+import me.afek.stonemanmod.entity.FixEntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -7,29 +8,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.math.vector.Vector3d;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 public class AttackPlayerGoal<T extends LivingEntity> extends NearestAttackableTargetGoal {
+    FixEntityPredicate entityPredicate;
 
     public AttackPlayerGoal(MobEntity p_i50313_1_, Class<T> p_i50313_2_, boolean p_i50313_3_) {
         super(p_i50313_1_, p_i50313_2_, p_i50313_3_);
-    }
-
-    public static float getYaw(Vector3d vector) {
-        double dx = vector.x();
-        double dz = vector.z();
-        double yaw = 0.0D;
-        if (dx != 0.0D) {
-            if (dx < 0.0D) {
-                yaw = 4.71238898038469D;
-            } else {
-                yaw = 1.5707963267948966D;
-            }
-
-            yaw -= Math.atan(dz / dx);
-        } else if (dz < 0.0D) {
-            yaw = 3.141592653589793D;
-        }
-
-        return (float) (-yaw * 57.29577951308232D);
+        this.entityPredicate = (new FixEntityPredicate()).range(this.getFollowDistance());
     }
 
     @Override
@@ -66,7 +53,7 @@ public class AttackPlayerGoal<T extends LivingEntity> extends NearestAttackableT
 
     @Override
     protected void findTarget() {
-        PlayerEntity player = this.mob.level.getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+        PlayerEntity player = getNearestEntity(this.mob.level.players(), this.entityPredicate, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         if (player != null) {
             boolean canSeenPlayer = canSeePlayer(player);
             if (canSeenPlayer) {
@@ -78,6 +65,23 @@ public class AttackPlayerGoal<T extends LivingEntity> extends NearestAttackableT
 
             this.target = player;
         }
+    }
+
+    public <T extends LivingEntity> T getNearestEntity(List<? extends T> p_217361_1_, FixEntityPredicate p_217361_2_, @Nullable LivingEntity p_217361_3_, double p_217361_4_, double p_217361_6_, double p_217361_8_) {
+        double d0 = -1.0D;
+        T t = null;
+
+        for (T t1 : p_217361_1_) {
+            if (p_217361_2_.test(p_217361_3_, t1)) {
+                double d1 = t1.distanceToSqr(p_217361_4_, p_217361_6_, p_217361_8_);
+                if (d0 == -1.0D || d1 < d0) {
+                    d0 = d1;
+                    t = t1;
+                }
+            }
+        }
+
+        return t;
     }
 
     private boolean canSeePlayer(PlayerEntity player) {
